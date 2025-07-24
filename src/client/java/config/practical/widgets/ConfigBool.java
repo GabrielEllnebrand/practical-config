@@ -1,5 +1,6 @@
 package config.practical.widgets;
 
+import config.practical.manager.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -33,11 +34,13 @@ public class ConfigBool extends ClickableWidget {
 
     private final Consumer<Boolean> consumer;
     private final Supplier<Boolean> supplier;
+    private final ConfigManager manager;
 
-    public ConfigBool(Text message, Supplier<Boolean> supplier, Consumer<Boolean> consumer) {
+    public ConfigBool(Text message, ConfigManager manager, Supplier<Boolean> supplier, Consumer<Boolean> consumer) {
         super(0, 0, WIDTH, HEIGHT, message);
         this.supplier = supplier;
         this.consumer = consumer;
+        this.manager = manager;
     }
 
     @Override
@@ -67,6 +70,7 @@ public class ConfigBool extends ClickableWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         consumer.accept(!supplier.get());
+        manager.save();
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
