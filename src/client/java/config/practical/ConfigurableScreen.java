@@ -3,7 +3,6 @@ package config.practical;
 
 import config.practical.category.ConfigCategory;
 import config.practical.category.ConfigCategoryList;
-import config.practical.list.ConfigList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,7 +15,6 @@ public class ConfigurableScreen extends Screen {
     private static final int WIDGET_X_OFFSET = 4;
 
     private static final int LIST_Y_OFFSET = 50;
-    private static final int ITEM_HEIGHT = 40;
 
     private static final int CATEGORY_Y_OFFSET = 10;
 
@@ -25,8 +23,8 @@ public class ConfigurableScreen extends Screen {
     private static final int TITLE_Y_OFFSET = 20;
 
     private final ConfigSearch search;
-    private final ConfigList list;
     private final ConfigCategoryList categories;
+    private final ConfigScroll scroll;
 
     private final Screen parent;
 
@@ -36,8 +34,8 @@ public class ConfigurableScreen extends Screen {
         MinecraftClient client = MinecraftClient.getInstance();
         Window window = client.getWindow();
 
+        scroll = new ConfigScroll(0, LIST_Y_OFFSET, window.getScaledWidth(), window.getScaledHeight() - LIST_Y_OFFSET, 200);
         search = new ConfigSearch(client.textRenderer, WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigSearch.HEIGHT) / 2, this);
-        list = new ConfigList(client, window.getScaledWidth(), window.getScaledHeight(), LIST_Y_OFFSET, ITEM_HEIGHT);
         categories = new ConfigCategoryList(client.textRenderer, selected -> updateScroll(""), WIDGET_X_OFFSET, LIST_Y_OFFSET + CATEGORY_Y_OFFSET);
 
         this.parent = parent;
@@ -49,9 +47,10 @@ public class ConfigurableScreen extends Screen {
 
     @Override
     protected void init() {
+
         addDrawableChild(search);
         addDrawableChild(categories);
-        addDrawableChild(list);
+        addDrawableChild(scroll);
         updateScroll("");
     }
 
@@ -60,20 +59,24 @@ public class ConfigurableScreen extends Screen {
     }
 
     public void updateScroll(String searchTerm) {
-        list.children().clear();
+        scroll.children().clear();
 
         if (searchTerm.isEmpty()) {
-            categories.forEachInSelected(list::addEntry);
+            categories.forEachInSelected(scroll::add);
         } else {
             String searchTermLowered = searchTerm.toLowerCase();
 
-            categories.forEachEntry(entry -> {
-                String message = entry.getWidget().getMessage().getString().toLowerCase();
+            categories.forEachWidget(widget -> {
+                String message = widget.getMessage().getString().toLowerCase();
                 if (message.contains(searchTermLowered)) {
-                    list.addEntry(entry);
+                    scroll.add(widget);
+                } else if (widget instanceof ConfigSection section) {
+                    if (section.searchTermExists(searchTermLowered)) scroll.add(widget);
                 }
             });
         }
+
+        scroll.setScrollY(0);
     }
 
     @Override

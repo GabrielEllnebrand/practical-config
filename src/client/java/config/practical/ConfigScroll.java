@@ -1,0 +1,96 @@
+package config.practical;
+
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConfigScroll extends ContainerWidget {
+
+    private static final int ITEM_MARGIN = 2;
+    private static final int SLIDER_X_OFFSET = 24;
+
+    private final ArrayList<ClickableWidget> children;
+    private int contentHeight;
+    private final int maxItemWidth;
+
+    public ConfigScroll(int x, int y, int width, int height, int maxItemWidth) {
+        super(x, y, width, height, Text.empty());
+        this.children = new ArrayList<>();
+        this.contentHeight = 0;
+        this.maxItemWidth = maxItemWidth;
+        update();
+    }
+
+    @Override
+    public List<? extends Element> children() {
+        return children;
+    }
+
+    public void add(ClickableWidget widget) {
+        if (widget == null) return;
+        children.add(widget);
+    }
+
+    @Override
+    protected int getContentsHeightWithPadding() {
+        return contentHeight;
+    }
+
+    @Override
+    protected double getDeltaYPerScroll() {
+        return 10;
+    }
+
+    @Override
+    protected int getScrollbarX() {
+        return (width + maxItemWidth) / 2 + SLIDER_X_OFFSET;
+    }
+
+    @Override
+    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        this.drawScrollbar(context);
+
+        int x = getX();
+        int y = getY();
+
+        context.enableScissor(x, y, x + width, y + height);
+        for (ClickableWidget widget : children) {
+            widget.render(context, mouseX, mouseY, deltaTicks);
+        }
+        context.disableScissor();
+
+    }
+
+    @Override
+    public void setScrollY(double scrollY) {
+        super.setScrollY(scrollY);
+        update();
+    }
+
+    public void update() {
+        int x = getX();
+        int y = getY();
+
+        int currY = y - (int) getScrollY();
+
+        int halfWidth = width/2;
+
+        for (ClickableWidget widget : children) {
+            widget.setPosition(x + halfWidth - widget.getWidth()/2, currY);
+            currY += widget.getHeight() + ITEM_MARGIN;
+        }
+
+        contentHeight = currY - y + (int) getScrollY();
+    }
+
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
+    }
+}

@@ -1,6 +1,5 @@
 package config.practical.category;
 
-import config.practical.list.ConfigEntry;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -78,14 +77,14 @@ public class ConfigCategoryList extends ClickableWidget {
         height = CATEGORY_HEIGHT * categories.size();
     }
 
-    public void forEachEntry(Consumer<ConfigEntry> consumer) {
+    public void forEachWidget(Consumer<ClickableWidget> consumer) {
         for (ConfigCategory category : categories) {
-            category.forEachEntry(consumer);
+            category.forEachWidget(consumer);
         }
     }
 
-    public void forEachInSelected(Consumer<ConfigEntry> consumer) {
-        selected.forEachEntry(consumer);
+    public void forEachInSelected(Consumer<ClickableWidget> consumer) {
+        selected.forEachWidget(consumer);
     }
 
     @Override
