@@ -35,6 +35,7 @@ public class ConfigSection extends ContainerWidget {
         return children;
     }
 
+    @SuppressWarnings("unused")
     public void add(ClickableWidget widget) {
         if (widget == null) return;
         children.add(widget);

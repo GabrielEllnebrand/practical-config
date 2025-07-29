@@ -3,6 +3,7 @@ package config.practical.manager;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import config.practical.hud.HUDComponent;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,8 +23,9 @@ public class ConfigManager {
         this.classes = classes;
     }
 
+    @SuppressWarnings("unused")
     public ConfigManager(String filePath, Class<?> clazz) {
-      this(filePath, List.of(clazz));
+        this(filePath, List.of(clazz));
     }
 
     public void save() {
@@ -55,6 +57,7 @@ public class ConfigManager {
         }
     }
 
+    @SuppressWarnings("unused")
     public void load() {
         String jsonContent;
         try {
@@ -63,25 +66,31 @@ public class ConfigManager {
             return;
         }
         Gson gson = new Gson();
-        JsonObject obj = gson.fromJson(jsonContent, JsonObject.class);
+        JsonObject object = gson.fromJson(jsonContent, JsonObject.class);
         for (Class<?> clazz : classes) {
             for (Field field : clazz.getDeclaredFields()) {
-                if (!field.isAnnotationPresent(ConfigValue.class)) continue;
-
-                String name = field.getName();
-                if (obj.has(name)) {
-                    try {
-                        JsonElement jsonVal = obj.get(name);
-                        Object val = gson.fromJson(jsonVal, field.getType());
-                        field.set(null, val);
-
-                    } catch (IllegalAccessException ignored) {
-
-                    }
-                }
+                loadField(object, gson, field);
             }
         }
     }
 
+    private void loadField(JsonObject object, Gson gson, Field field) {
+        if (!field.isAnnotationPresent(ConfigValue.class)) return;
 
+        String name = field.getName();
+        if (!object.has(name)) return;
+
+        try {
+            JsonElement jsonVal = object.get(name);
+            Object val = gson.fromJson(jsonVal, field.getType());
+            if (val instanceof HUDComponent newVal && field.get(null) instanceof HUDComponent reference) {
+                reference.copyAttributes(newVal);
+            } else {
+                field.set(null, val);
+            }
+        } catch (IllegalAccessException ignored) {
+
+        }
+
+    }
 }

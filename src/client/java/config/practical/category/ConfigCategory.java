@@ -14,6 +14,7 @@ public class ConfigCategory {
         widgets = new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     public void add(ClickableWidget widget) {
         if (widget == null) return;
         widgets.add(widget);

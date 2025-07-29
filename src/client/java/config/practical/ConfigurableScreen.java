@@ -3,12 +3,14 @@ package config.practical;
 
 import config.practical.category.ConfigCategory;
 import config.practical.category.ConfigCategoryList;
+import config.practical.manager.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigurableScreen extends Screen {
 
@@ -25,10 +27,12 @@ public class ConfigurableScreen extends Screen {
     private final ConfigSearch search;
     private final ConfigCategoryList categories;
     private final ConfigScroll scroll;
+    private final ConfigHudEdit hudEdit;
 
     private final Screen parent;
+    private final ConfigManager manager;
 
-    public ConfigurableScreen(Text title, Screen parent) {
+    public ConfigurableScreen(Text title, Screen parent, @NotNull ConfigManager manager) {
         super(title);
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -37,12 +41,15 @@ public class ConfigurableScreen extends Screen {
         scroll = new ConfigScroll(0, LIST_Y_OFFSET, window.getScaledWidth(), window.getScaledHeight() - LIST_Y_OFFSET, 200);
         search = new ConfigSearch(client.textRenderer, WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigSearch.HEIGHT) / 2, this);
         categories = new ConfigCategoryList(client.textRenderer, selected -> updateScroll(""), WIDGET_X_OFFSET, LIST_Y_OFFSET + CATEGORY_Y_OFFSET);
+        hudEdit = new ConfigHudEdit(window.getScaledWidth() - ConfigHudEdit.WIDTH - WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigHudEdit.HEIGHT) / 2, this);
 
         this.parent = parent;
+        this.manager = manager;
     }
 
-    public ConfigurableScreen(Text title) {
-        this(title, null);
+    @SuppressWarnings("unused")
+    public ConfigurableScreen(Text title, @NotNull ConfigManager manager) {
+        this(title, null, manager);
     }
 
     @Override
@@ -51,9 +58,11 @@ public class ConfigurableScreen extends Screen {
         addDrawableChild(search);
         addDrawableChild(categories);
         addDrawableChild(scroll);
+        addDrawableChild(hudEdit);
         updateScroll("");
     }
 
+    @SuppressWarnings("unused")
     public void addCategory(ConfigCategory category) {
         categories.addCategory(category);
     }
@@ -94,6 +103,7 @@ public class ConfigurableScreen extends Screen {
 
     @Override
     public void close() {
+        manager.save();
         assert this.client != null;
         this.client.setScreen(this.parent);
     }

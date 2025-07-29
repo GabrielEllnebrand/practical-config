@@ -1,6 +1,5 @@
 package config.practical.widgets;
 
-import config.practical.manager.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -13,6 +12,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class ConfigColor extends ClickableWidget {
 
     public static final int WIDTH = 150;
@@ -26,15 +26,13 @@ public class ConfigColor extends ClickableWidget {
 
     private final Consumer<Integer> consumer;
     private final Supplier<Integer> supplier;
-    private final ConfigManager manager;
     private String text;
 
-    public ConfigColor(Text message, ConfigManager manager, Supplier<Integer> supplier, Consumer<Integer> consumer) {
+    public ConfigColor(Text message, Supplier<Integer> supplier, Consumer<Integer> consumer) {
         super(0, 0, WIDTH, HEIGHT, message);
         this.text = String.format("%06X", supplier.get());
         this.supplier = supplier;
         this.consumer = consumer;
-        this.manager = manager;
     }
 
     @Override
@@ -56,7 +54,6 @@ public class ConfigColor extends ClickableWidget {
             try {
                 int color = (int) Long.parseLong(text, 16);
                 consumer.accept(color);
-                manager.save();
             } catch (NumberFormatException ignored) {
             }
         }
