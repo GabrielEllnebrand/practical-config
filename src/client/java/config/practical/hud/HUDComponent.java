@@ -117,11 +117,9 @@ public class HUDComponent {
     }
 
     public boolean inBounds(int mouseX, int mouseY) {
-        double screenX = getScaledX();
-        double screenY = getScaledY();
+        double screenX = x * client.getWindow().getScaledWidth();
+        double screenY = y * client.getWindow().getScaledHeight();
 
-        System.out.println(mouseX + " " + mouseY);
-        System.out.println(screenX + " " + screenY + " " + (screenX + width * scale) + " " + (screenY + height * scale));
         return screenX <= mouseX && mouseX <= screenX + (width * scale)
                 && screenY <= mouseY && mouseY <= screenY + (height * scale);
     }
