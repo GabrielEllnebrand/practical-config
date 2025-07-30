@@ -88,7 +88,9 @@ public class ComponentEditScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (isDragging && selected != null) {
-            selected.move((int) deltaX, (int) deltaY);
+            assert client != null;
+            Window window = client.getWindow();
+            selected.move( deltaX/window.getScaledWidth(), deltaY/window.getScaledHeight());
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }

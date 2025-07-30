@@ -1,5 +1,6 @@
 package config.practical.hud;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -13,26 +14,40 @@ public class HUDComponent {
     private static final int HIGHLIGHT_COLOR = 0x99ffffff;
     private static final int HIGHLIGHT_MARGIN = 2;
 
-    private transient final int defaultX, defaultY;
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+
+    private transient final double defaultX, defaultY;
     private transient final float defaultScale;
 
-    public transient final int width, height;
+    private transient int width, height;
 
     private double x, y;
     private float scale;
     private transient final ConditionSupplier conditionSupplier;
     private transient final RenderSupplier renderSupplier;
 
-    public HUDComponent(int x, int y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
+    /**
+     * x, y goes from 0 to 1 and get scaled
+     * up using the Window with getScaledWidth
+     * and get getScaledHeight
+     * @param x 0 to 1
+     * @param y 0 to 1
+     * @param width int
+     * @param height int
+     * @param scale a scale that's between MIN_SCALE and MAX_SCALE
+     * @param conditionSupplier the condition to render
+     * @param renderSupplier the function that is used to render it
+     */
+    public HUDComponent(double x, double y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.scale = scale;
+        this.scale = MathHelper.clamp(scale, MIN_SCALE, MAX_SCALE);
 
         defaultX = x;
         defaultY = y;
-        defaultScale = scale;
+        defaultScale = MathHelper.clamp(scale, MIN_SCALE, MAX_SCALE);
 
         this.conditionSupplier = conditionSupplier;
         this.renderSupplier = renderSupplier;
@@ -66,15 +81,49 @@ public class HUDComponent {
     }
 
     public int getScaledX() {
-        return (int) (  x / scale);
+        int screenWidth = client.getWindow().getScaledWidth();
+        return (int) (x * screenWidth / scale);
     }
 
     public int getScaledY() {
-        return (int) (y / scale);
+        int screenHeight = client.getWindow().getScaledHeight();
+        return (int) (y * screenHeight / scale);
+    }
+
+    @SuppressWarnings("unused")
+    public int getWidth() {
+        return width;
+    }
+
+    @SuppressWarnings("unused")
+    public int getHeight() {
+        return height;
+    }
+
+    @SuppressWarnings("unused")
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    @SuppressWarnings("unused")
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @SuppressWarnings("unused")
+    public void setDimension(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public boolean inBounds(int mouseX, int mouseY) {
-        return x <= mouseX && mouseX <= x + (width * scale) && y <= mouseY && mouseY <= y + (height * scale);
+        double screenX = getScaledX();
+        double screenY = getScaledY();
+
+        System.out.println(mouseX + " " + mouseY);
+        System.out.println(screenX + " " + screenY + " " + (screenX + width * scale) + " " + (screenY + height * scale));
+        return screenX <= mouseX && mouseX <= screenX + (width * scale)
+                && screenY <= mouseY && mouseY <= screenY + (height * scale);
     }
 
     public void render(DrawContext context) {
@@ -110,6 +159,7 @@ public class HUDComponent {
          * Will be called when the function render is called
          * Make use of it so the component only renders
          * when you want it to render
+         *
          * @return true if it should render, else false
          */
         boolean shouldRender();
@@ -122,8 +172,9 @@ public class HUDComponent {
          * NOTE: component is the component itself
          * and scaledX and scaledY should be used
          * for the x and y position
+         *
          * @param component the component itself
-         * @param context DrawContext
+         * @param context   DrawContext
          */
         void render(HUDComponent component, DrawContext context);
     }
