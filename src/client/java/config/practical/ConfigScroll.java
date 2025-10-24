@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ConfigScroll extends ContainerWidget {
 
-    private static final int ITEM_MARGIN = 2;
+    private static final int ITEM_MARGIN = 4;
     private static final int SLIDER_X_OFFSET = 24;
 
     private final ArrayList<ClickableWidget> children;

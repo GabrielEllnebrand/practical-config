@@ -4,6 +4,7 @@ package config.practical;
 import config.practical.category.ConfigCategory;
 import config.practical.category.ConfigCategoryList;
 import config.practical.manager.ConfigManager;
+import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -54,7 +55,6 @@ public class ConfigurableScreen extends Screen {
 
     @Override
     protected void init() {
-
         addDrawableChild(search);
         addDrawableChild(categories);
         addDrawableChild(scroll);
@@ -79,8 +79,10 @@ public class ConfigurableScreen extends Screen {
                 String message = widget.getMessage().getString().toLowerCase();
                 if (message.contains(searchTermLowered)) {
                     scroll.add(widget);
-                } else if (widget instanceof ConfigSection section) {
-                    if (section.searchTermExists(searchTermLowered)) scroll.add(widget);
+                } else if (widget instanceof ConfigParent configParent) {
+                    configParent.forEachInParent(scroll::add);
+                } else if (widget instanceof ConfigSection configSection) {
+                    if (configSection.searchTermExists(searchTermLowered)) scroll.add(widget);
                 }
             });
         }

@@ -1,5 +1,6 @@
 package config.practical;
 
+import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -92,7 +93,13 @@ public class ConfigSection extends ContainerWidget {
         }
 
         for (ClickableWidget widget : children) {
-            widget.setPosition(x + halfWidth - widget.getWidth() / 2, currY);
+            int width = x + halfWidth - widget.getWidth() / 2;
+            int height = currY;
+            widget.setPosition(width, height);
+
+            if (widget instanceof ConfigParent parent) {
+                parent.update(width, height);
+            }
             currY += widget.getHeight() + ITEM_MARGIN;
         }
     }

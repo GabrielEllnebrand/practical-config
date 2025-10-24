@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public class ConfigColor extends ClickableWidget {
 
-    public static final int WIDTH = 150;
+    public static final int WIDTH = 70;
     public static final int HEIGHT = 30;
 
     public static final int COLOR_HEIGHT = 20;
