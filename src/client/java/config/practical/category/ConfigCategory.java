@@ -1,5 +1,7 @@
 package config.practical.category;
 
+import config.practical.ConfigSection;
+import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
 import java.util.ArrayList;
@@ -20,9 +22,27 @@ public class ConfigCategory {
         widgets.add(widget);
     }
 
-    public void forEachWidget(Consumer<ClickableWidget> consumer) {
-        for (ClickableWidget widget : widgets) {
-            consumer.accept(widget);
+    public ArrayList<ClickableWidget> searchWidgets(String term) {
+
+        ArrayList<ClickableWidget> temp = new ArrayList<>();
+
+        for (ClickableWidget widget: widgets) {
+            String message = widget.getMessage().getString().toLowerCase();
+            if (message.contains(term)) {
+
+                if (widget instanceof ConfigSection section) {
+                    temp.addAll(section.getAllWidgets());
+                }
+
+                if (widget instanceof ConfigParent parent) {
+                    temp.addAll(parent.getAllWidgets());
+                }
+
+                temp.add(widget);
+            }
+
         }
+
+        return temp;
     }
 }

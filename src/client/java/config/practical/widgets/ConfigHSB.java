@@ -1,32 +1,30 @@
 package config.practical.widgets;
 
-import config.practical.PracticalconfigClient;
+import config.practical.Constants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ConfigHSB extends ClickableWidget {
 
-    private static final Identifier HUE_SPRITE = Identifier.of(PracticalconfigClient.NAMESPACE, "hue-sprite");
-    private static final Identifier ALPHA_SPRITE = Identifier.of(PracticalconfigClient.NAMESPACE, "alpha-sprite");
+    private static final Identifier HUE_SPRITE = Identifier.of(Constants.NAMESPACE, "hue-sprite");
+    private static final Identifier ALPHA_SPRITE = Identifier.of(Constants.NAMESPACE, "alpha-sprite");
 
     public static final int SPRITE_WIDTH = 64;
     public static final int SB_MASK_HEIGHT = 32;
     public static final int HUE_HEIGHT = 8;
     public static final int ALPHA_HEIGHT = 8;
     public static final int PADDING = 4;
-    public static final int WIDTH = 200;
     public static final int HEIGHT = HUE_HEIGHT + SB_MASK_HEIGHT + PADDING * 4;
 
     public static final int BACKGROUND_COLOR = 0xff666666;
@@ -43,7 +41,7 @@ public class ConfigHSB extends ClickableWidget {
     private final Consumer<Integer> consumer;
 
     public ConfigHSB(Text message, Supplier<Integer> supplier, Consumer<Integer> consumer, String identifier) {
-        super(0, 0, WIDTH, HEIGHT, message);
+        super(0, 0, Constants.WIDGET_WIDTH, HEIGHT, message);
         this.supplier = supplier;
         this.consumer = consumer;
 
@@ -59,7 +57,7 @@ public class ConfigHSB extends ClickableWidget {
         Color.RGBtoHSB(r, g, b, hsb);
         hue = hsb[0];
 
-        sbMask = Identifier.of(PracticalconfigClient.NAMESPACE, identifier);
+        sbMask = Identifier.of(Constants.NAMESPACE, identifier);
         makeSBMask();
     }
 
@@ -69,8 +67,8 @@ public class ConfigHSB extends ClickableWidget {
         int x = getX();
         int y = getY();
 
-        context.fill(x, y, x + WIDTH, y + HEIGHT, BACKGROUND_COLOR);
-        context.drawBorder(x, y, WIDTH, HEIGHT, this.isFocused() ? WHITE_COLOR : BLACK_COLOR);
+        context.fill(x, y, x + Constants.WIDGET_WIDTH, y + HEIGHT, BACKGROUND_COLOR);
+        context.drawBorder(x, y, Constants.WIDGET_WIDTH, HEIGHT, this.isFocused() ? WHITE_COLOR : BLACK_COLOR);
 
         if (sbMask == null) return;
         /*context.drawText(MinecraftClient.getInstance().textRenderer, getMessage(), x, y, 0xffffffff,true);

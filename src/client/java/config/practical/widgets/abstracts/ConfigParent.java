@@ -1,5 +1,6 @@
 package config.practical.widgets.abstracts;
 
+import config.practical.ConfigSection;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -49,9 +50,29 @@ public abstract class ConfigParent extends ClickableWidget implements ParentElem
 
     }
 
-    public abstract void update(int width, int height);
+    public abstract void update();
 
-    public void forEachInParent(Consumer<ClickableWidget> consumer) {
-        for (ClickableWidget widget: widgets) consumer.accept(widget);
+    public ArrayList<ClickableWidget> getAllWidgets() {
+
+        ArrayList<ClickableWidget> temp = new ArrayList<>();
+
+        for (ClickableWidget widget: widgets) {
+
+            if (widget instanceof ConfigParent parent) {
+                temp.addAll(parent.getAllWidgets());
+
+            } else if (widget instanceof ConfigSection section) {
+                temp.addAll(section.getAllWidgets());
+            }
+
+            temp.add(widget);
+        }
+
+        return temp;
+    }
+
+    public void addChild(ClickableWidget widget) {
+        if (widget == null) return;
+        widgets.add(widget);
     }
 }

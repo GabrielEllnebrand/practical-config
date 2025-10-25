@@ -1,5 +1,6 @@
 package config.practical;
 
+import config.practical.category.ConfigCategory;
 import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -98,21 +99,31 @@ public class ConfigSection extends ContainerWidget {
             widget.setPosition(width, height);
 
             if (widget instanceof ConfigParent parent) {
-                parent.update(width, height);
+                parent.update();
             }
             currY += widget.getHeight() + ITEM_MARGIN;
         }
     }
 
-    public boolean searchTermExists(String searchTermLowered) {
-        for (ClickableWidget widget : children) {
-            String message = widget.getMessage().getString().toLowerCase();
-            if (message.contains(searchTermLowered)) {
-                return true;
+    public ArrayList<ClickableWidget> getAllWidgets() {
+
+        ArrayList<ClickableWidget> temp = new ArrayList<>();
+
+        for (ClickableWidget widget: children) {
+
+            if (widget instanceof ConfigParent parent) {
+                temp.addAll(parent.getAllWidgets());
+
+            } else if (widget instanceof ConfigSection section) {
+                temp.addAll(section.getAllWidgets());
             }
+
+            temp.add(widget);
         }
-        return false;
+
+        return temp;
     }
+
 
 
     @Override

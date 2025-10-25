@@ -1,5 +1,6 @@
 package config.practical.widgets;
 
+import config.practical.Constants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -14,7 +15,6 @@ import java.util.function.Supplier;
 public class ConfigBool extends ClickableWidget {
 
 
-    public static final int WIDTH = 200;
     public static final int HEIGHT = 20;
 
     public static final int BUTTON_WIDTH = 32;
@@ -36,7 +36,7 @@ public class ConfigBool extends ClickableWidget {
     private final Supplier<Boolean> supplier;
 
     public ConfigBool(Text message, Supplier<Boolean> supplier, Consumer<Boolean> consumer) {
-        super(0, 0, WIDTH, HEIGHT, message);
+        super(0, 0, Constants.WIDGET_WIDTH, HEIGHT, message);
         this.supplier = supplier;
         this.consumer = consumer;
     }
@@ -50,18 +50,18 @@ public class ConfigBool extends ClickableWidget {
 
         Text message = getMessage();
 
-        context.fill(x, y, x + WIDTH, y + HEIGHT, BACKGROUND_COLOR);
-        context.drawBorder(x, y, WIDTH, HEIGHT, this.isFocused() ? WHITE_COLOR : BLACK_COLOR);
+        context.fill(x, y, x + Constants.WIDGET_WIDTH, y + HEIGHT, BACKGROUND_COLOR);
+        context.drawBorder(x, y, Constants.WIDGET_WIDTH, HEIGHT, this.isFocused() ? WHITE_COLOR : BLACK_COLOR);
 
         context.drawText(textRenderer, message, x + 6, y + 6, WHITE_COLOR, true);
 
-        context.fill(x + WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, x + WIDTH - BUTTON_MARGIN, y + HEIGHT - BUTTON_MARGIN, SLIDER_COLOR);
-        context.drawBorder(x + WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK_COLOR);
+        context.fill(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, x + Constants.WIDGET_WIDTH - BUTTON_MARGIN, y + HEIGHT - BUTTON_MARGIN, SLIDER_COLOR);
+        context.drawBorder(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK_COLOR);
 
         int isTrueValue = supplier.get() ? BUTTON_WIDTH - BUTTON_SLIDER_SIZE : 0;
         int color = supplier.get() ? ENABLED_COLOR : DISABLED_COLOR;
-        context.fill(x + WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, x + WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue + BUTTON_SLIDER_SIZE, y + HEIGHT - BUTTON_MARGIN, color);
-        context.drawBorder(x + WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, BUTTON_SLIDER_SIZE, BUTTON_SLIDER_SIZE, BLACK_COLOR);
+        context.fill(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue + BUTTON_SLIDER_SIZE, y + HEIGHT - BUTTON_MARGIN, color);
+        context.drawBorder(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, BUTTON_SLIDER_SIZE, BUTTON_SLIDER_SIZE, BLACK_COLOR);
 
     }
 

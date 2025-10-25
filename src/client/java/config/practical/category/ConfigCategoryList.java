@@ -7,7 +7,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class ConfigCategoryList extends ClickableWidget {
 
@@ -77,14 +76,18 @@ public class ConfigCategoryList extends ClickableWidget {
         height = CATEGORY_HEIGHT * categories.size();
     }
 
-    public void forEachWidget(Consumer<ClickableWidget> consumer) {
-        for (ConfigCategory category : categories) {
-            category.forEachWidget(consumer);
+    public ArrayList<ClickableWidget> searchWidgets(String term) {
+        if (term.isEmpty()) {
+            return selected.widgets;
         }
-    }
 
-    public void forEachInSelected(Consumer<ClickableWidget> consumer) {
-        selected.forEachWidget(consumer);
+        ArrayList<ClickableWidget> temp = new ArrayList<>();
+
+        for (ConfigCategory category: categories) {
+            temp.addAll(category.searchWidgets(term));
+        }
+
+        return temp;
     }
 
     @Override

@@ -4,10 +4,10 @@ package config.practical;
 import config.practical.category.ConfigCategory;
 import config.practical.category.ConfigCategoryList;
 import config.practical.manager.ConfigManager;
-import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -70,21 +70,8 @@ public class ConfigurableScreen extends Screen {
     public void updateScroll(String searchTerm) {
         scroll.children().clear();
 
-        if (searchTerm.isEmpty()) {
-            categories.forEachInSelected(scroll::add);
-        } else {
-            String searchTermLowered = searchTerm.toLowerCase();
-
-            categories.forEachWidget(widget -> {
-                String message = widget.getMessage().getString().toLowerCase();
-                if (message.contains(searchTermLowered)) {
-                    scroll.add(widget);
-                } else if (widget instanceof ConfigParent configParent) {
-                    configParent.forEachInParent(scroll::add);
-                } else if (widget instanceof ConfigSection configSection) {
-                    if (configSection.searchTermExists(searchTermLowered)) scroll.add(widget);
-                }
-            });
+        for (ClickableWidget widget: categories.searchWidgets(searchTerm.toLowerCase())) {
+            scroll.add(widget);
         }
 
         scroll.setScrollY(0);
