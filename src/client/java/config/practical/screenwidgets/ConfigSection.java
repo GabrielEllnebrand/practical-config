@@ -1,6 +1,7 @@
-package config.practical;
+package config.practical.screenwidgets;
 
-import config.practical.category.ConfigCategory;
+import config.practical.utilities.DrawHelper;
+import config.practical.widgets.abstracts.ConfigChild;
 import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -41,6 +42,8 @@ public class ConfigSection extends ContainerWidget {
     public void add(ClickableWidget widget) {
         if (widget == null) return;
         children.add(widget);
+        if (widget instanceof ConfigChild) return;
+
         height += widget.getHeight() + ITEM_MARGIN;
         width = Math.max(width, widget.getWidth() + PADDING*2);
     }
@@ -61,19 +64,16 @@ public class ConfigSection extends ContainerWidget {
         int y = getY();
 
         context.enableScissor(x, y, x + width, y + height);
-        context.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+        DrawHelper.drawBackground(context,x, y, width, height, BACKGROUND_COLOR);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         Text text = getMessage();
-
         context.drawText(MinecraftClient.getInstance().textRenderer, text, (width - textRenderer.getWidth(text)) / 2 + x, y + PADDING, TEXT_COLOR, true);
-
-
-        for (ClickableWidget widget : children) {
-            widget.render(context, mouseX, mouseY, deltaTicks);
-        }
         context.disableScissor();
 
+        for(ClickableWidget widget: children) {
+            widget.render(context, mouseX, mouseY, deltaTicks);
+        }
     }
 
     @Override
@@ -94,14 +94,24 @@ public class ConfigSection extends ContainerWidget {
         }
 
         for (ClickableWidget widget : children) {
+            if (widget instanceof ConfigChild) continue;
+
             int width = x + halfWidth - widget.getWidth() / 2;
             int height = currY;
             widget.setPosition(width, height);
 
-            if (widget instanceof ConfigParent parent) {
-                parent.update();
-            }
             currY += widget.getHeight() + ITEM_MARGIN;
+        }
+    }
+
+    public void hideChildComponents() {
+        for (ClickableWidget widget: children) {
+            if (widget instanceof ConfigParent parent) {
+                parent.hideAll();
+
+            } else if (widget instanceof ConfigSection section) {
+                section.hideChildComponents();
+            }
         }
     }
 
@@ -117,8 +127,6 @@ public class ConfigSection extends ContainerWidget {
             } else if (widget instanceof ConfigSection section) {
                 temp.addAll(section.getAllWidgets());
             }
-
-            temp.add(widget);
         }
 
         return temp;

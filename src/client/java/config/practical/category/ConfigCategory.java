@@ -1,16 +1,18 @@
 package config.practical.category;
 
-import config.practical.ConfigSection;
+import config.practical.screenwidgets.ConfigSection;
 import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class ConfigCategory {
     public final String name;
     public final ArrayList<ClickableWidget> widgets;
 
+    /**
+     * @param name The name of the category
+     */
     public ConfigCategory(String name) {
         this.name = name;
         widgets = new ArrayList<>();
@@ -26,7 +28,7 @@ public class ConfigCategory {
 
         ArrayList<ClickableWidget> temp = new ArrayList<>();
 
-        for (ClickableWidget widget: widgets) {
+        for (ClickableWidget widget : widgets) {
             String message = widget.getMessage().getString().toLowerCase();
             if (message.contains(term)) {
 

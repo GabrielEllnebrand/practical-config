@@ -1,12 +1,16 @@
 package config.practical.widgets;
 
-import config.practical.Constants;
+import config.practical.utilities.Constants;
+import config.practical.utilities.DrawHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -14,27 +18,33 @@ import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public class ConfigBool extends ClickableWidget {
 
+    private static final Identifier BACKGROUND_SPRITE = Identifier.of(Constants.NAMESPACE, "button-background");
 
-    public static final int HEIGHT = 20;
+    public static final int HEIGHT = 25;
 
-    public static final int BUTTON_WIDTH = 32;
-    public static final int BUTTON_HEIGHT = 14;
+    public static final int TRACK_WIDTH = 38;
+    public static final int TRACK_HEIGHT = 14;
 
-    public static final int BUTTON_SLIDER_SIZE = BUTTON_HEIGHT;
-    public static final int BUTTON_MARGIN = 3;
+    public static final int THUMB_SIZE = TRACK_HEIGHT + 2;
+    public static final int THUMB_MARGIN = 8;
 
-    public static final int BACKGROUND_COLOR = 0xff666666;
-    public static final int BLACK_COLOR = 0xff000000;
-    public static final int WHITE_COLOR = 0xffffffff;
+    public static final int THUMB_EXTENDED_X = TRACK_WIDTH - THUMB_SIZE + 2;
 
     public static final int DISABLED_COLOR = 0xffff0000;
     public static final int ENABLED_COLOR = 0xff00ff00;
 
-    public static final int SLIDER_COLOR = 0xff444444;
+    private static final float MAX_TICKS = 2f;
+
+    private float totalTicks = MAX_TICKS;
 
     private final Consumer<Boolean> consumer;
     private final Supplier<Boolean> supplier;
 
+    /**
+     * @param message The text that will be displayed
+     * @param supplier a supplier to get the current boolean
+     * @param consumer a consumer to set the current boolean
+     */
     public ConfigBool(Text message, Supplier<Boolean> supplier, Consumer<Boolean> consumer) {
         super(0, 0, Constants.WIDGET_WIDTH, HEIGHT, message);
         this.supplier = supplier;
@@ -45,29 +55,42 @@ public class ConfigBool extends ClickableWidget {
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         int x = getX();
         int y = getY();
+
+        if (totalTicks < MAX_TICKS) {
+            totalTicks = Math.min(totalTicks + deltaTicks, MAX_TICKS);
+        }
+        ;
+
+        float delta = totalTicks / MAX_TICKS;
+        int lerpedPositon;
+        int color;
+
+        if (supplier.get()) {
+            lerpedPositon = MathHelper.lerp(delta, 0, THUMB_EXTENDED_X);
+            color = ENABLED_COLOR;
+        } else {
+            lerpedPositon = MathHelper.lerp(delta, THUMB_EXTENDED_X, 0);
+            color = DISABLED_COLOR;
+        }
+
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer textRenderer = client.textRenderer;
 
-        Text message = getMessage();
+        //background and message
+        DrawHelper.drawBackground(context, x, y, width, height);
+        context.drawText(textRenderer, getMessage(), x + Constants.TEXT_PADDING, y + (HEIGHT - Constants.TEXT_HEIGHT) / 2, Constants.WHITE_COLOR, true);
 
-        context.fill(x, y, x + Constants.WIDGET_WIDTH, y + HEIGHT, BACKGROUND_COLOR);
-        context.drawBorder(x, y, Constants.WIDGET_WIDTH, HEIGHT, this.isFocused() ? WHITE_COLOR : BLACK_COLOR);
-
-        context.drawText(textRenderer, message, x + 6, y + 6, WHITE_COLOR, true);
-
-        context.fill(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, x + Constants.WIDGET_WIDTH - BUTTON_MARGIN, y + HEIGHT - BUTTON_MARGIN, SLIDER_COLOR);
-        context.drawBorder(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN, y + BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK_COLOR);
-
-        int isTrueValue = supplier.get() ? BUTTON_WIDTH - BUTTON_SLIDER_SIZE : 0;
-        int color = supplier.get() ? ENABLED_COLOR : DISABLED_COLOR;
-        context.fill(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue + BUTTON_SLIDER_SIZE, y + HEIGHT - BUTTON_MARGIN, color);
-        context.drawBorder(x + Constants.WIDGET_WIDTH - BUTTON_WIDTH - BUTTON_MARGIN + isTrueValue, y + BUTTON_MARGIN, BUTTON_SLIDER_SIZE, BUTTON_SLIDER_SIZE, BLACK_COLOR);
-
+        //the button itself
+        DrawHelper.drawBackground(context, x + Constants.WIDGET_WIDTH - TRACK_WIDTH - THUMB_MARGIN, y + (HEIGHT - TRACK_HEIGHT) / 2, TRACK_WIDTH, TRACK_HEIGHT, color);
+        DrawHelper.drawBackground(context, x + Constants.WIDGET_WIDTH - TRACK_WIDTH - THUMB_MARGIN + lerpedPositon - 1, y + (HEIGHT - TRACK_HEIGHT) / 2 - 1, THUMB_SIZE, THUMB_SIZE);
     }
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        consumer.accept(!supplier.get());
+        boolean newValue = !supplier.get();
+        consumer.accept(newValue);
+        totalTicks = 0;
         return super.mouseClicked(mouseX, mouseY, button);
     }
 

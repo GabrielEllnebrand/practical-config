@@ -1,4 +1,4 @@
-package config.practical;
+package config.practical.screenwidgets;
 
 import config.practical.hud.ComponentEditScreen;
 import net.minecraft.client.MinecraftClient;

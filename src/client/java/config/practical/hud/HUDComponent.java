@@ -1,6 +1,7 @@
 package config.practical.hud;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -23,6 +24,7 @@ public class HUDComponent {
 
     private double x, y;
     private float scale;
+    private String info;
     private transient final ConditionSupplier conditionSupplier;
     private transient final RenderSupplier renderSupplier;
 
@@ -30,20 +32,23 @@ public class HUDComponent {
      * x, y goes from 0 to 1 and get scaled
      * up using the Window with getScaledWidth
      * and get getScaledHeight
-     * @param x 0 to 1
-     * @param y 0 to 1
-     * @param width int
-     * @param height int
-     * @param scale a scale that's between MIN_SCALE and MAX_SCALE
+     *
+     * @param x                 0 to 1
+     * @param y                 0 to 1
+     * @param width             int
+     * @param height            int
+     * @param scale             a scale that's between MIN_SCALE and MAX_SCALE
+     * @param info              text info that will display when its selected
      * @param conditionSupplier the condition to render
-     * @param renderSupplier the function that is used to render it
+     * @param renderSupplier    the function that is used to render it
      */
-    public HUDComponent(double x, double y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
+    public HUDComponent(double x, double y, int width, int height, float scale, String info, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.scale = MathHelper.clamp(scale, MIN_SCALE, MAX_SCALE);
+        this.info = info;
 
         defaultX = x;
         defaultY = y;
@@ -53,6 +58,10 @@ public class HUDComponent {
         this.renderSupplier = renderSupplier;
 
         HUDRender.addComponent(this);
+    }
+
+    public HUDComponent(double x, double y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
+        this(x, y, width, height, scale, "", conditionSupplier, renderSupplier);
     }
 
     public void reset() {
@@ -148,7 +157,9 @@ public class HUDComponent {
         stack.scale(scale, scale, 1);
         int x = getScaledX();
         int y = getScaledY();
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.fill(x - HIGHLIGHT_MARGIN, y - HIGHLIGHT_MARGIN, x + width + HIGHLIGHT_MARGIN, y + height + HIGHLIGHT_MARGIN, HIGHLIGHT_COLOR);
+        context.drawText(textRenderer, info, x + (width - textRenderer.getWidth(info)) / 2, y - textRenderer.fontHeight - 2, 0xffffffff, true);
         stack.pop();
     }
 

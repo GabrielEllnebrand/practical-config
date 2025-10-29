@@ -1,20 +1,20 @@
 package config.practical.widgets.abstracts;
 
-import config.practical.ConfigSection;
+import config.practical.screenwidgets.ConfigSection;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class ConfigParent extends ClickableWidget implements ParentElement {
 
-    private final ArrayList<ClickableWidget> widgets = new ArrayList<>();
+    private final ArrayList<ConfigChild> widgets = new ArrayList<>();
 
     public ConfigParent(int x, int y, int width, int height, Text message) {
         super(x, y, width, height, message);
@@ -50,8 +50,6 @@ public abstract class ConfigParent extends ClickableWidget implements ParentElem
 
     }
 
-    public abstract void update();
-
     public ArrayList<ClickableWidget> getAllWidgets() {
 
         ArrayList<ClickableWidget> temp = new ArrayList<>();
@@ -71,8 +69,19 @@ public abstract class ConfigParent extends ClickableWidget implements ParentElem
         return temp;
     }
 
-    public void addChild(ClickableWidget widget) {
+    public void addChild(ConfigChild widget) {
         if (widget == null) return;
         widgets.add(widget);
     }
+
+    public void update() {
+        int x = getX();
+        int y = getY();
+
+        for(ConfigChild widget: widgets) {
+            widget.update(x, y);
+        }
+    }
+
+    public abstract void hideAll();
 }

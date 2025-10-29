@@ -1,5 +1,7 @@
-package config.practical;
+package config.practical.screenwidgets;
 
+import config.practical.widgets.abstracts.ConfigChild;
+import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -16,12 +18,14 @@ public class ConfigScroll extends ContainerWidget {
     private static final int SLIDER_X_OFFSET = 24;
 
     private final ArrayList<ClickableWidget> children;
+    private final ArrayList<ClickableWidget> childWidgets;
     private int contentHeight;
     private final int maxItemWidth;
 
     public ConfigScroll(int x, int y, int width, int height, int maxItemWidth) {
         super(x, y, width, height, Text.empty());
         this.children = new ArrayList<>();
+        this.childWidgets = new ArrayList<>();
         this.contentHeight = 0;
         this.maxItemWidth = maxItemWidth;
         update();
@@ -35,6 +39,10 @@ public class ConfigScroll extends ContainerWidget {
     public void add(ClickableWidget widget) {
         if (widget == null) return;
         children.add(widget);
+
+        if (widget instanceof ConfigChild child) {
+            childWidgets.add(child);
+        }
     }
 
     @Override
@@ -58,13 +66,19 @@ public class ConfigScroll extends ContainerWidget {
 
         int x = getX();
         int y = getY();
+        int width = getWidth();
+        int height = getHeight();
+
 
         context.enableScissor(x, y, x + width, y + height);
         for (ClickableWidget widget : children) {
+            if (widget instanceof ConfigChild) continue;
+            widget.render(context, mouseX, mouseY, deltaTicks);
+        }
+        for (ClickableWidget widget : childWidgets) {
             widget.render(context, mouseX, mouseY, deltaTicks);
         }
         context.disableScissor();
-
     }
 
     @Override
@@ -79,11 +93,22 @@ public class ConfigScroll extends ContainerWidget {
 
         int currY = y - (int) getScrollY();
 
-        int halfWidth = width/2;
+        int halfWidth = width / 2;
 
         for (ClickableWidget widget : children) {
-            widget.setPosition(x + halfWidth - widget.getWidth()/2, currY);
+
+            if (widget instanceof ConfigChild) continue;
+
+            widget.setPosition(x + halfWidth - widget.getWidth() / 2, currY);
             currY += widget.getHeight() + ITEM_MARGIN;
+
+            if (widget instanceof ConfigParent parent) {
+                parent.update();
+            }
+
+            if (widget instanceof ConfigSection section) {
+                section.hideChildComponents();
+            }
         }
 
         contentHeight = currY - y + (int) getScrollY();

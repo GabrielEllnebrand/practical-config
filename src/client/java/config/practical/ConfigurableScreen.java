@@ -4,6 +4,11 @@ package config.practical;
 import config.practical.category.ConfigCategory;
 import config.practical.category.ConfigCategoryList;
 import config.practical.manager.ConfigManager;
+import config.practical.screenwidgets.ConfigHudEdit;
+import config.practical.screenwidgets.ConfigScroll;
+import config.practical.screenwidgets.ConfigSearch;
+import config.practical.utilities.Constants;
+import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -33,13 +38,22 @@ public class ConfigurableScreen extends Screen {
     private final Screen parent;
     private final ConfigManager manager;
 
+    /**
+     * The main screen of practical-config
+     * To add widgets make a ConfigCategory
+     * and add widgets to the category which
+     * you then register to the screen
+     * @param title The title that will be displayed
+     * @param parent A screen that will be the parent of this
+     * @param manager The configManager that should save when the screen is closed
+     */
     public ConfigurableScreen(Text title, Screen parent, @NotNull ConfigManager manager) {
         super(title);
 
         MinecraftClient client = MinecraftClient.getInstance();
         Window window = client.getWindow();
 
-        scroll = new ConfigScroll(0, LIST_Y_OFFSET, window.getScaledWidth(), window.getScaledHeight() - LIST_Y_OFFSET, 200);
+        scroll = new ConfigScroll(0, LIST_Y_OFFSET, window.getScaledWidth(), window.getScaledHeight() - LIST_Y_OFFSET, Constants.WIDGET_WIDTH + 100);
         search = new ConfigSearch(client.textRenderer, WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigSearch.HEIGHT) / 2, this);
         categories = new ConfigCategoryList(client.textRenderer, selected -> updateScroll(""), WIDGET_X_OFFSET, LIST_Y_OFFSET + CATEGORY_Y_OFFSET);
         hudEdit = new ConfigHudEdit(window.getScaledWidth() - ConfigHudEdit.WIDTH - WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigHudEdit.HEIGHT) / 2, this);
@@ -71,6 +85,10 @@ public class ConfigurableScreen extends Screen {
         scroll.children().clear();
 
         for (ClickableWidget widget: categories.searchWidgets(searchTerm.toLowerCase())) {
+            if (widget instanceof ConfigParent configParent) {
+                configParent.hideAll();
+                configParent.update();
+            }
             scroll.add(widget);
         }
 

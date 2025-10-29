@@ -77,10 +77,6 @@ public class ConfigCategoryList extends ClickableWidget {
     }
 
     public ArrayList<ClickableWidget> searchWidgets(String term) {
-        if (term.isEmpty()) {
-            return selected.widgets;
-        }
-
         ArrayList<ClickableWidget> temp = new ArrayList<>();
 
         for (ConfigCategory category: categories) {
