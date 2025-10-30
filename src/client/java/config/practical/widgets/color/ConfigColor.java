@@ -118,8 +118,12 @@ public class ConfigColor extends ConfigParent {
     }
 
     public void setColor(int color) {
-        consumer.accept(alphaValue << 24 | color);
 
+        if (transparency) {
+            consumer.accept(alphaValue << 24 | color);
+        } else {
+            consumer.accept(color);
+        }
         float[] hsb = new float[3];
 
         int r = (color >> 16 & 0xff);
@@ -150,7 +154,11 @@ public class ConfigColor extends ConfigParent {
     public void setSBValue(float saturation, float brightness) {
         int color = Color.HSBtoRGB(hueValue, saturation, brightness);
         hexInput.updateText(color);
-        consumer.accept(alphaValue << 24 | color);
+        if (transparency) {
+            consumer.accept(alphaValue << 24 | color);
+        } else {
+            consumer.accept(color);
+        }
     }
 
     @Override
