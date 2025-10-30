@@ -33,6 +33,7 @@ public class ConfigColor extends ConfigParent {
     private AlphaSlider alphaSlider;
 
     private boolean displayColorSelector;
+    private final boolean transparency;
 
     private float hueValue;
     private int alphaValue;
@@ -71,6 +72,7 @@ public class ConfigColor extends ConfigParent {
         hueSlider = new HueSlider(this, hueValue);
         this.addChild(hueSlider);
 
+        this.transparency = transparency;
         if (transparency) {
             alphaSlider = new AlphaSlider(this, alphaValue);
             this.addChild(alphaSlider);
@@ -92,7 +94,11 @@ public class ConfigColor extends ConfigParent {
         DrawHelper.drawBackground(context, x, y, width, height);
         context.drawText(MinecraftClient.getInstance().textRenderer, getMessage(), x + Constants.TEXT_PADDING, y + (HEIGHT - Constants.TEXT_HEIGHT) / 2, Constants.WHITE_COLOR, true);
 
-        DrawHelper.drawBackground(context, x + width - COLOR_SIZE - COLOR_RIGHT_PADDING, y + (height - COLOR_SIZE) / 2, COLOR_SIZE, COLOR_SIZE, supplier.get());
+        if (transparency) {
+            DrawHelper.drawBackground(context, x + width - COLOR_SIZE - COLOR_RIGHT_PADDING, y + (height - COLOR_SIZE) / 2, COLOR_SIZE, COLOR_SIZE, supplier.get());
+        } else {
+            DrawHelper.drawBackground(context, x + width - COLOR_SIZE - COLOR_RIGHT_PADDING, y + (height - COLOR_SIZE) / 2, COLOR_SIZE, COLOR_SIZE, 255 << 24 | supplier.get());
+        }
     }
 
     public boolean displayColorSelector() {
