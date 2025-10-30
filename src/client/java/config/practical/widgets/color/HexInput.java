@@ -54,10 +54,10 @@ class HexInput extends ConfigChild {
         String temp = String.format("%06X", color);
         int length = temp.length();
 
-        if (length == 8) {
-            text = temp.substring(2, 8);
-        } else if (length == 7) {
-            text = temp.substring(1, 7);
+        if (length > 6) {
+            text = temp.substring(length - 6, length);
+        }  else {
+            text = temp;
         }
     }
 
@@ -69,7 +69,7 @@ class HexInput extends ConfigChild {
     @Override
     protected void updatePosition(int x, int y) {
         this.setX(x + ConfigColor.WIDTH + ConfigColor.CHILD_OFFSET);
-        this.setY(y - ConfigColor.SLIDER_HEIGHT);
+        this.setY(y);
     }
 
     @Override

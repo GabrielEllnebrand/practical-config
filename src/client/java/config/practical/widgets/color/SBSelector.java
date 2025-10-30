@@ -56,7 +56,7 @@ class SBSelector extends ConfigChild {
     @Override
     protected void updatePosition(int x, int y) {
         this.setX(x + ConfigColor.WIDTH + ConfigColor.CHILD_OFFSET);
-        this.setY(y);
+        this.setY(y + ConfigColor.SLIDER_HEIGHT);
     }
 
     @Override

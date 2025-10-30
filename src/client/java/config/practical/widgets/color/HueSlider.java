@@ -70,6 +70,6 @@ class HueSlider extends ConfigChild {
     @Override
     protected void updatePosition(int x, int y) {
         this.setX(x + ConfigColor.WIDTH + ConfigColor.CHILD_OFFSET);
-        this.setY(y + SBSelector.SIZE);
+        this.setY(y + SBSelector.SIZE + ConfigColor.SLIDER_HEIGHT);
     }
 }
