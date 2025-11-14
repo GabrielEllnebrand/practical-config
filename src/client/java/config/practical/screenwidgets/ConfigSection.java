@@ -23,8 +23,8 @@ public class ConfigSection extends ContainerWidget {
     private static final int TEXT_HEIGHT = 16;
     private static final int DEFAULT_WIDTH = 150;
 
-    private static  final int BACKGROUND_COLOR = 0xaa222222;
-    private static  final  int TEXT_COLOR = 0xffffffff;
+    private static final int BACKGROUND_COLOR = 0xaa222222;
+    private static final int TEXT_COLOR = 0xffffffff;
 
     private final ArrayList<ClickableWidget> children;
 
@@ -45,7 +45,7 @@ public class ConfigSection extends ContainerWidget {
         if (widget instanceof ConfigChild) return;
 
         height += widget.getHeight() + ITEM_MARGIN;
-        width = Math.max(width, widget.getWidth() + PADDING*2);
+        width = Math.max(width, widget.getWidth() + PADDING * 2);
     }
 
     @Override
@@ -64,14 +64,14 @@ public class ConfigSection extends ContainerWidget {
         int y = getY();
 
         context.enableScissor(x, y, x + width, y + height);
-        DrawHelper.drawBackground(context,x, y, width, height, BACKGROUND_COLOR);
+        DrawHelper.drawBackground(context, x, y, width, height, BACKGROUND_COLOR);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         Text text = getMessage();
         context.drawText(MinecraftClient.getInstance().textRenderer, text, (width - textRenderer.getWidth(text)) / 2 + x, y + PADDING, TEXT_COLOR, true);
         context.disableScissor();
 
-        for(ClickableWidget widget: children) {
+        for (ClickableWidget widget : children) {
             widget.render(context, mouseX, mouseY, deltaTicks);
         }
     }
@@ -89,8 +89,8 @@ public class ConfigSection extends ContainerWidget {
         int currY = y + TEXT_HEIGHT;
         int halfWidth = width / 2;
 
-        for(ClickableWidget widget: children) {
-            width = Math.max(width, widget.getWidth() + PADDING*2);
+        for (ClickableWidget widget : children) {
+            width = Math.max(width, widget.getWidth() + PADDING * 2);
         }
 
         for (ClickableWidget widget : children) {
@@ -105,7 +105,7 @@ public class ConfigSection extends ContainerWidget {
     }
 
     public void hideChildComponents() {
-        for (ClickableWidget widget: children) {
+        for (ClickableWidget widget : children) {
             if (widget instanceof ConfigParent parent) {
                 parent.hideAll();
 
@@ -119,7 +119,7 @@ public class ConfigSection extends ContainerWidget {
 
         ArrayList<ClickableWidget> temp = new ArrayList<>();
 
-        for (ClickableWidget widget: children) {
+        for (ClickableWidget widget : children) {
 
             if (widget instanceof ConfigParent parent) {
                 temp.addAll(parent.getAllWidgets());
@@ -132,6 +132,21 @@ public class ConfigSection extends ContainerWidget {
         return temp;
     }
 
+    public boolean contains(String term) {
+        String message = this.getMessage().getString().toLowerCase();
+        if (message.contains(term)) return true;
+
+        for (ClickableWidget widget : children) {
+            if (widget instanceof ConfigSection section) {
+                if (section.contains(term)) return true;
+            } else {
+                message = widget.getMessage().getString().toLowerCase();
+                if (message.contains(term)) return true;
+            }
+        }
+
+        return false;
+    }
 
 
     @Override

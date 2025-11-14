@@ -1,13 +1,20 @@
 package config.practical.hud;
 
+import config.practical.Practicalconfig;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
-public class HUDComponent {
+public class HUDComponent implements HudElement {
+
+    private static int componentCount = 0;
 
     private static final float MIN_SCALE = 0.2f;
     private static final float MAX_SCALE = 5f;
@@ -24,7 +31,7 @@ public class HUDComponent {
 
     private double x, y;
     private float scale;
-    private String info;
+    private final String info;
     private transient final ConditionSupplier conditionSupplier;
     private transient final RenderSupplier renderSupplier;
 
@@ -57,7 +64,9 @@ public class HUDComponent {
         this.conditionSupplier = conditionSupplier;
         this.renderSupplier = renderSupplier;
 
-        HUDRender.addComponent(this);
+        HudElementRegistry.addLast(Identifier.of(Practicalconfig.MOD_ID,  "compoonent-" + componentCount), this);
+        componentCount++;
+        ComponentEditScreen.addComponent(this);
     }
 
     public HUDComponent(double x, double y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
@@ -133,34 +142,34 @@ public class HUDComponent {
                 && screenY <= mouseY && mouseY <= screenY + (height * scale);
     }
 
-    public void render(DrawContext context) {
-        if (!conditionSupplier.shouldRender()) return;
-
-        MatrixStack stack = context.getMatrices();
-        stack.push();
-        stack.scale(scale, scale, 1);
-        renderSupplier.render(this, context);
-        stack.pop();
-    }
-
     public void renderIgnoreConditions(DrawContext context) {
-        MatrixStack stack = context.getMatrices();
-        stack.push();
-        stack.scale(scale, scale, 1);
+        Matrix3x2fStack stack = context.getMatrices();
+        stack.pushMatrix();
+        stack.scale(scale, scale);
         renderSupplier.render(this, context);
-        stack.pop();
+        stack.popMatrix();
     }
 
     public void renderHighlight(DrawContext context) {
-        MatrixStack stack = context.getMatrices();
-        stack.push();
-        stack.scale(scale, scale, 1);
+        Matrix3x2fStack stack = context.getMatrices();
+        stack.pushMatrix();
+        stack.scale(scale, scale);
         int x = getScaledX();
         int y = getScaledY();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.fill(x - HIGHLIGHT_MARGIN, y - HIGHLIGHT_MARGIN, x + width + HIGHLIGHT_MARGIN, y + height + HIGHLIGHT_MARGIN, HIGHLIGHT_COLOR);
         context.drawText(textRenderer, info, x + (width - textRenderer.getWidth(info)) / 2, y - textRenderer.fontHeight - 2, 0xffffffff, true);
-        stack.pop();
+        stack.popMatrix();
+    }
+
+    @Override
+    public void render(DrawContext context, RenderTickCounter tickCounter) {
+        if (!conditionSupplier.shouldRender()) return;
+        Matrix3x2fStack stack = context.getMatrices();
+        stack.pushMatrix();
+        stack.scale(scale, scale);
+        renderSupplier.render(this, context);
+        stack.popMatrix();
     }
 
     public interface ConditionSupplier {

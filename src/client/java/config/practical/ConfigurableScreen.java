@@ -14,9 +14,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 public class ConfigurableScreen extends Screen {
 
@@ -100,12 +100,12 @@ public class ConfigurableScreen extends Screen {
         super.render(context, mouseX, mouseY, deltaTicks);
 
         float centerX = (MinecraftClient.getInstance().getWindow().getScaledWidth() - (this.textRenderer.getWidth(this.title) * TITLE_SCALAR)) / 2;
-        MatrixStack stack = context.getMatrices();
-        stack.push();
-        stack.translate(centerX, TITLE_Y_OFFSET, 0);
-        stack.scale(TITLE_SCALAR, TITLE_SCALAR, 1);
+        Matrix3x2fStack stack = context.getMatrices();
+        stack.pushMatrix();
+        stack.translate(centerX, TITLE_Y_OFFSET);
+        stack.scale(TITLE_SCALAR, TITLE_SCALAR);
         context.drawText(this.textRenderer, this.title, 0, 0, TITLE_COLOR, true);
-        stack.pop();
+        stack.popMatrix();
     }
 
     @Override

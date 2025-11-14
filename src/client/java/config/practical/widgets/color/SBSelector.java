@@ -3,9 +3,9 @@ package config.practical.widgets.color;
 import config.practical.utilities.Constants;
 import config.practical.widgets.abstracts.ConfigChild;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.texture.TextureManager;
@@ -39,8 +39,8 @@ class SBSelector extends ConfigChild {
         int width = getWidth();
         int height = getHeight();
 
-        context.drawTexture(RenderLayer::getGuiTextured, sbMask, x + Constants.LINE_THICKNESS, y + Constants.LINE_THICKNESS, 0, 0, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, Constants.WHITE_COLOR);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, EMPTY_SB_MASK, x, y, width, height);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, sbMask, x + Constants.LINE_THICKNESS, y + Constants.LINE_THICKNESS, 0, 0, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, Constants.WHITE_COLOR);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, EMPTY_SB_MASK, x, y, width, height);
     }
 
     @Override

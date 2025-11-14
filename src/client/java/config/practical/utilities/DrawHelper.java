@@ -1,7 +1,7 @@
 package config.practical.utilities;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
 import static config.practical.utilities.Constants.CORNER_RADIUS;
@@ -27,16 +27,16 @@ public class DrawHelper {
         }
 
         //corners
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TOP_LEFT, x, y, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TOP_RIGHT, x + width - CORNER_RADIUS, y, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BOTTOM_LEFT, x, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BOTTOM_RIGHT, x + width - CORNER_RADIUS, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TOP_LEFT, x, y, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TOP_RIGHT, x + width - CORNER_RADIUS, y, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BOTTOM_LEFT, x, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BOTTOM_RIGHT, x + width - CORNER_RADIUS, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, Constants.WHITE_COLOR);
 
         //corners filled
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TOP_LEFT_FILLED, x, y, CORNER_RADIUS, CORNER_RADIUS, color);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TOP_RIGHT_FILLED, x + width - CORNER_RADIUS, y, CORNER_RADIUS, CORNER_RADIUS, color);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BOTTOM_LEFT_FILLED, x, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, color);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BOTTOM_RIGHT_FILLED, x + width - CORNER_RADIUS, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, color);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TOP_LEFT_FILLED, x, y, CORNER_RADIUS, CORNER_RADIUS, color);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TOP_RIGHT_FILLED, x + width - CORNER_RADIUS, y, CORNER_RADIUS, CORNER_RADIUS, color);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BOTTOM_LEFT_FILLED, x, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, color);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BOTTOM_RIGHT_FILLED, x + width - CORNER_RADIUS, y + height - CORNER_RADIUS, CORNER_RADIUS, CORNER_RADIUS, color);
 
 
         //border

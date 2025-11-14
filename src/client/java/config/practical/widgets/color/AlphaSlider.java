@@ -3,9 +3,9 @@ package config.practical.widgets.color;
 import config.practical.utilities.Constants;
 import config.practical.utilities.DrawHelper;
 import config.practical.widgets.abstracts.ConfigChild;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
 class AlphaSlider extends ConfigChild {
@@ -32,7 +32,7 @@ class AlphaSlider extends ConfigChild {
         int width = getWidth();
         int height = getHeight();
 
-        context.drawGuiTexture(RenderLayer::getGuiTextured, ALPHA_SLIDER, x, y, width, height);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ALPHA_SLIDER, x, y, width, height);
         DrawHelper.drawBackground(context, x + thumbPosition, y, THUMB_DIAMETER, THUMB_DIAMETER);
     }
 

@@ -29,18 +29,22 @@ public class ConfigCategory {
         ArrayList<ClickableWidget> temp = new ArrayList<>();
 
         for (ClickableWidget widget : widgets) {
-            String message = widget.getMessage().getString().toLowerCase();
-            if (message.contains(term)) {
-
-                if (widget instanceof ConfigSection section) {
+            if (widget instanceof ConfigSection section) {
+                if (section.contains(term)) {
                     temp.addAll(section.getAllWidgets());
+                    temp.add(widget);
                 }
+            } else {
 
-                if (widget instanceof ConfigParent parent) {
-                    temp.addAll(parent.getAllWidgets());
+                String message = widget.getMessage().getString().toLowerCase();
+                if (message.contains(term)) {
+
+                    if (widget instanceof ConfigParent parent) {
+                        temp.addAll(parent.getAllWidgets());
+                    }
+
+                    temp.add(widget);
                 }
-
-                temp.add(widget);
             }
 
         }

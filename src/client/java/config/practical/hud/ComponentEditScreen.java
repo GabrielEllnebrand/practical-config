@@ -21,8 +21,8 @@ public class ComponentEditScreen extends Screen {
     private static final int WIDGET_MARGIN = 4;
 
     private static final float SCALE_FACTOR = 0.02f;
+    private static final ArrayList<HUDComponent> components = new ArrayList<>();
 
-    private final ArrayList<HUDComponent> components;
     private final Screen parent;
 
     private HUDComponent selected;
@@ -31,7 +31,11 @@ public class ComponentEditScreen extends Screen {
     public ComponentEditScreen(Screen parent) {
         super(TITLE);
         this.parent = parent;
-        this.components = HUDRender.getComponents();
+    }
+
+    public static void addComponent(HUDComponent component) {
+        if (component == null) return;
+        components.add(component);
     }
 
     @Override
