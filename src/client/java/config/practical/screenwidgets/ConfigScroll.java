@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,26 @@ public class ConfigScroll extends ContainerWidget {
         if (widget instanceof ConfigChild child) {
             childWidgets.add(child);
         }
+    }
+
+    @Override
+    public void setFocused(@Nullable Element focused) {
+        super.setFocused(focused);
+
+        if (focused == null || focused instanceof ConfigChild) return;
+
+        for (ClickableWidget widget : children) {
+            if (widget.isFocused()) continue;
+
+            if (widget instanceof ConfigParent parent) {
+                parent.hideAll();
+            }
+
+            if (widget instanceof ConfigSection section) {
+                section.hideChildComponents();
+            }
+        }
+
     }
 
     @Override
@@ -111,7 +132,15 @@ public class ConfigScroll extends ContainerWidget {
             }
         }
 
-        contentHeight = currY - y + (int) getScrollY();
+        //contentHeight = currY - y + (int) getScrollY();
+
+        int highestY = 0;
+        for (ClickableWidget widget : children) {
+            highestY = Math.max(highestY, (widget.getY() + widget.getHeight()));
+        }
+
+        //to fix ConfigChild components being out of bounds
+        contentHeight = highestY + (int) getScrollY();
     }
 
     @Override
