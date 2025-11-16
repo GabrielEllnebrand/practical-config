@@ -50,7 +50,7 @@ public class ConfigScroll extends ContainerWidget {
     public void setFocused(@Nullable Element focused) {
         super.setFocused(focused);
 
-        if (focused == null || focused instanceof ConfigChild) return;
+        if (focused instanceof ConfigChild) return;
 
         for (ClickableWidget widget : children) {
             if (widget.isFocused()) continue;
