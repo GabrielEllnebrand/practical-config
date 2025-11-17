@@ -5,9 +5,7 @@ import config.practical.utilities.DrawHelper;
 import config.practical.widgets.abstracts.ConfigParent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -65,6 +63,7 @@ public class ConfigOptions<T> extends ConfigParent {
 
     public void hideList() {
         displayList = false;
+        update();
     }
 
     @Override
