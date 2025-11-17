@@ -66,6 +66,7 @@ ConfigurableScreen screen = new ConfigurableScreen(TITLE, parent, manager);
 To add a widget to the screen you first have to create a category in which to store the widgets. 
 After that you can add all the widgets you want for that specific category. 
 Afterward add the category to the ConfigurableScreen. 
+
 ```Java
 ConfigurableScreen screen = new ConfigurableScreen(TITLE, parent, manager);
 
@@ -102,12 +103,14 @@ public static void checkInputs(MinecraftClient client) {
 Note: You can make your own widgets and use them as long as they extend ClickableWidget
 <h3>Boolean toggle</h3>
 Used to toggle a boolean value
+
 ```Java
 public ConfigBool(Text message, Supplier<Boolean> supplier, Consumer<Boolean> consumer)
 ```
 
 <h3>Sliders</h3>
 A premade slider for doubles, floats and integers. <br>Note the user can move the slider by 1 step using the left and right arrow key
+
 ```Java
 public ConfigDouble(Text message, Supplier<Double> supplier, Consumer<Double> consumer, double step, double min, double max)
 public ConfigFloat(Text message, Supplier<Float> supplier, Consumer<Float> consumer, float step, float min, float max)
@@ -116,6 +119,7 @@ public ConfigInt(Text message, Supplier<Integer> supplier, Consumer<Integer> con
 
 <h3>Color picker</h3>
 A color picker that lets the user pick a color in the hsb format
+
 ```Java
 public ConfigColor(Text message, Supplier<Integer> supplier, Consumer<Integer> consumer, String identifier, boolean transparency)
 ```
@@ -124,6 +128,7 @@ public ConfigColor(Text message, Supplier<Integer> supplier, Consumer<Integer> c
 A built-in options selector that lets you choice between some alternatives
 Give it a list of options that it will let the user choice from. 
 <br>Note: The objects toString() method is what gets typed into each option 
+
 ```Java
 public ConfigOptions(Text message, T[] options, Supplier<T> supplier, Consumer<T> consumer)
 ```
