@@ -54,9 +54,9 @@ public class ConfigurableScreen extends Screen {
         Window window = client.getWindow();
 
         scroll = new ConfigScroll(0, LIST_Y_OFFSET, window.getScaledWidth(), window.getScaledHeight() - LIST_Y_OFFSET, Constants.WIDGET_WIDTH + 100);
-        search = new ConfigSearch(client.textRenderer, WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigSearch.HEIGHT) / 2, this);
-        categories = new ConfigCategoryList(client.textRenderer, selected -> updateScroll(""), WIDGET_X_OFFSET, LIST_Y_OFFSET + CATEGORY_Y_OFFSET);
-        hudEdit = new ConfigHudEdit(window.getScaledWidth() - ConfigHudEdit.WIDTH - WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigHudEdit.HEIGHT) / 2, this);
+        search = new ConfigSearch(this, client.textRenderer, WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigSearch.HEIGHT) / 2);
+        categories = new ConfigCategoryList(this, WIDGET_X_OFFSET, LIST_Y_OFFSET + CATEGORY_Y_OFFSET);
+        hudEdit = new ConfigHudEdit(this, window.getScaledWidth() - ConfigHudEdit.WIDTH - WIDGET_X_OFFSET, (LIST_Y_OFFSET - ConfigHudEdit.HEIGHT) / 2);
 
         this.parent = parent;
         this.manager = manager;
@@ -73,7 +73,7 @@ public class ConfigurableScreen extends Screen {
         addDrawableChild(categories);
         addDrawableChild(scroll);
         addDrawableChild(hudEdit);
-        updateScroll("");
+        update();
     }
 
     @SuppressWarnings("unused")
@@ -81,7 +81,12 @@ public class ConfigurableScreen extends Screen {
         categories.addCategory(category);
     }
 
+    public void update() {
+        updateScroll("");
+    }
+
     public void updateScroll(String searchTerm) {
+        scroll.setFocused(null);
         scroll.children().clear();
 
         for (ClickableWidget widget: categories.searchWidgets(searchTerm.toLowerCase())) {
@@ -93,6 +98,7 @@ public class ConfigurableScreen extends Screen {
         }
 
         scroll.setScrollY(0);
+        scroll.hideChildComponents();
     }
 
     @Override

@@ -17,7 +17,7 @@ class AlphaSlider extends ConfigChild {
     private int thumbPosition = 0;
 
     public AlphaSlider(ConfigColor parent, int alphaValue) {
-        super(ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
+        super(parent, ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
         this.parent = parent;
 
         setAlphaValue(alphaValue);

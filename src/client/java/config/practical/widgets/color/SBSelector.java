@@ -23,7 +23,7 @@ class SBSelector extends ConfigChild {
     private final Identifier sbMask;
 
     public SBSelector(ConfigColor parent, String identifier, float hue) {
-        super(SIZE, SIZE);
+        super(parent, SIZE, SIZE);
         this.parent = parent;
 
         sbMask = Identifier.of(Constants.NAMESPACE, identifier);

@@ -7,12 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 class OptionsList <T> extends ConfigChild {
 
@@ -24,7 +20,7 @@ class OptionsList <T> extends ConfigChild {
     private final Consumer<T> consumer;
 
     public OptionsList(ConfigOptions<T> parent, T[] options, Consumer<T> consumer) {
-        super(WIDTH, options.length * ELEMENT_HEIGHT);
+        super(parent, WIDTH, options.length * ELEMENT_HEIGHT);
         this.parent = parent;
         this.options = options;
         this.consumer = consumer;

@@ -34,6 +34,7 @@ public class HUDComponent implements HudElement {
     private final String info;
     private transient final ConditionSupplier conditionSupplier;
     private transient final RenderSupplier renderSupplier;
+    private transient final EditSupplier editSupplier;
 
     /**
      * x, y goes from 0 to 1 and get scaled
@@ -49,7 +50,7 @@ public class HUDComponent implements HudElement {
      * @param conditionSupplier the condition to render
      * @param renderSupplier    the function that is used to render it
      */
-    public HUDComponent(double x, double y, int width, int height, float scale, String info, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
+    public HUDComponent(double x, double y, int width, int height, float scale, String info, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier, @NotNull EditSupplier editSupplier) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -63,14 +64,21 @@ public class HUDComponent implements HudElement {
 
         this.conditionSupplier = conditionSupplier;
         this.renderSupplier = renderSupplier;
+        this.editSupplier = editSupplier;
 
         HudElementRegistry.addLast(Identifier.of(Practicalconfig.MOD_ID,  "compoonent-" + componentCount), this);
         componentCount++;
         ComponentEditScreen.addComponent(this);
     }
 
+    //backwards compatibility
+    public HUDComponent(double x, double y, int width, int height, float scale, String info, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
+        this(x, y, width, height, scale, info, conditionSupplier, renderSupplier, () -> true);
+    }
+
+    //backwards compatibility
     public HUDComponent(double x, double y, int width, int height, float scale, @NotNull ConditionSupplier conditionSupplier, @NotNull RenderSupplier renderSupplier) {
-        this(x, y, width, height, scale, "", conditionSupplier, renderSupplier);
+        this(x, y, width, height, scale, "", conditionSupplier, renderSupplier, () -> true);
     }
 
     public void reset() {
@@ -134,6 +142,10 @@ public class HUDComponent implements HudElement {
         this.height = height;
     }
 
+    public boolean editable() {
+        return editSupplier.shouldBeEditable();
+    }
+
     public boolean inBounds(int mouseX, int mouseY) {
         double screenX = x * client.getWindow().getScaledWidth();
         double screenY = y * client.getWindow().getScaledHeight();
@@ -195,5 +207,15 @@ public class HUDComponent implements HudElement {
          * @param context   DrawContext
          */
         void render(HUDComponent component, DrawContext context);
+    }
+
+    public interface EditSupplier {
+        /**
+         * Used to determine if the component
+         * should render while the user is in the
+         * ComponentEditScreen
+         *
+         */
+        boolean shouldBeEditable();
     }
 }

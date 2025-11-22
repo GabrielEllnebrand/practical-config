@@ -6,10 +6,12 @@ import net.minecraft.text.Text;
 public abstract class ConfigChild extends ClickableWidget {
 
     private final int normalWidth;
+    private final ConfigParent parent;
 
-    public ConfigChild(int width, int height) {
+    public ConfigChild(ConfigParent parent, int width, int height) {
         super(0, 0, 0, height, Text.empty());
         this.normalWidth = width;
+        this.parent = parent;
     }
 
     public void update(int x, int y) {
@@ -20,6 +22,11 @@ public abstract class ConfigChild extends ClickableWidget {
         }
 
         updatePosition(x, y);
+    }
+
+    @Override
+    public boolean isSelected() {
+        return super.isSelected();
     }
 
     public int getNormalWidth() {return normalWidth;}

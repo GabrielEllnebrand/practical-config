@@ -21,7 +21,10 @@ public class ComponentEditScreen extends Screen {
     private static final int WIDGET_MARGIN = 4;
 
     private static final float SCALE_FACTOR = 0.02f;
-    private static final ArrayList<HUDComponent> components = new ArrayList<>();
+
+    private static final ArrayList<HUDComponent> ALL_COMPONENTS = new ArrayList<>();
+
+    private final ArrayList<HUDComponent> components;
 
     private final Screen parent;
 
@@ -31,11 +34,18 @@ public class ComponentEditScreen extends Screen {
     public ComponentEditScreen(Screen parent) {
         super(TITLE);
         this.parent = parent;
+        this.components = new ArrayList<>();
+
+        ALL_COMPONENTS.forEach(component -> {
+            if (component.editable()) {
+                components.add(component);
+            }
+        });
     }
 
     public static void addComponent(HUDComponent component) {
         if (component == null) return;
-        components.add(component);
+        ALL_COMPONENTS.add(component);
     }
 
     @Override
@@ -45,6 +55,7 @@ public class ComponentEditScreen extends Screen {
         Window window = this.client.getWindow();
         int windowWidth = window.getScaledWidth();
         int windowHeight = window.getScaledHeight();
+
 
         ButtonWidget reset = ButtonWidget.builder(Text.literal("Reset All"),
                         (button -> components.forEach(HUDComponent::reset))
@@ -94,7 +105,7 @@ public class ComponentEditScreen extends Screen {
         if (isDragging && selected != null) {
             assert client != null;
             Window window = client.getWindow();
-            selected.move( deltaX/window.getScaledWidth(), deltaY/window.getScaledHeight());
+            selected.move(deltaX / window.getScaledWidth(), deltaY / window.getScaledHeight());
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }

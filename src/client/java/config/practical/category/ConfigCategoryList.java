@@ -1,5 +1,6 @@
 package config.practical.category;
 
+import config.practical.ConfigurableScreen;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -22,16 +23,14 @@ public class ConfigCategoryList extends ClickableWidget {
     private static final int UNSELECTED_COLOR = 0xff000000;
 
     private final ArrayList<ConfigCategory> categories;
-    private final TextRenderer renderer;
-    private final CategoryChangeListener listener;
+    private final ConfigurableScreen screen;
 
     private ConfigCategory selected;
 
-    public ConfigCategoryList(TextRenderer renderer, CategoryChangeListener listener, int x, int y) {
+    public ConfigCategoryList(ConfigurableScreen screen, int x, int y) {
         super(x, y, WIDTH, CATEGORY_HEIGHT, Text.literal(""));
         this.categories = new ArrayList<>();
-        this.renderer = renderer;
-        this.listener = listener;
+        this.screen = screen;
     }
 
     @Override
@@ -42,6 +41,8 @@ public class ConfigCategoryList extends ClickableWidget {
 
         context.enableScissor(x, y, x + width, y + height);
         context.fill(x, y, x + width, y + height, BACKGROUND_COLOR);
+
+        TextRenderer renderer = screen.getTextRenderer();
 
         int textPadding = (CATEGORY_HEIGHT - renderer.fontHeight) / 2;
 
@@ -64,7 +65,7 @@ public class ConfigCategoryList extends ClickableWidget {
 
         if (index < categories.size() && index > -1) {
             selected = categories.get(index);
-            if (listener != null) listener.update(selected);
+            screen.update();
         }
     }
 
@@ -93,9 +94,5 @@ public class ConfigCategoryList extends ClickableWidget {
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
-    }
-
-    public interface CategoryChangeListener {
-        void update(ConfigCategory selected);
     }
 }

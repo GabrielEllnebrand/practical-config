@@ -19,7 +19,7 @@ class HexInput extends ConfigChild {
     private String text;
 
     public HexInput(ConfigColor parent, int color) {
-        super(ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
+        super(parent, ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
         this.parent = parent;
         updateText(color);
     }

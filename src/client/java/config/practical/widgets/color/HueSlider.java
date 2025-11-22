@@ -17,7 +17,7 @@ class HueSlider extends ConfigChild {
     private int thumbPosition = 0;
 
     public HueSlider(ConfigColor parent, float hue) {
-        super(ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
+        super(parent, ConfigColor.CHILD_WIDTH, ConfigColor.SLIDER_HEIGHT);
         this.parent = parent;
         setHueValue(hue);
     }

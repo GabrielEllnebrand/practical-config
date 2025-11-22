@@ -108,6 +108,7 @@ public class ConfigSection extends ContainerWidget {
         for (ClickableWidget widget : children) {
             if (widget instanceof ConfigParent parent) {
                 parent.hideAll();
+                parent.update();
 
             } else if (widget instanceof ConfigSection section) {
                 section.hideChildComponents();

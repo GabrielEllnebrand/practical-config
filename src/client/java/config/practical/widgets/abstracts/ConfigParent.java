@@ -5,7 +5,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,4 +83,14 @@ public abstract class ConfigParent extends ClickableWidget implements ParentElem
     }
 
     public abstract void hideAll();
+
+    public boolean hasSelectedComponent() {
+        if (this.isSelected()) return true;
+
+        for (ConfigChild widget: widgets) {
+            if (widget.isSelected()) return true;
+        }
+
+        return false;
+    }
 }

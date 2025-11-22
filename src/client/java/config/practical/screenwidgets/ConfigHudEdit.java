@@ -25,7 +25,7 @@ public class ConfigHudEdit extends ClickableWidget {
 
     public final Screen screen;
 
-    public ConfigHudEdit(int x, int y, Screen screen) {
+    public ConfigHudEdit(Screen screen, int x, int y) {
         super(x, y, WIDTH, HEIGHT, TEXT);
         this.screen = screen;
     }
@@ -44,7 +44,7 @@ public class ConfigHudEdit extends ClickableWidget {
 
         int textWidth = textRenderer.getWidth(message);
 
-        context.drawText(textRenderer, message, x + (WIDTH - textWidth)/2, y + TEXT_Y_OFFSET, WHITE_COLOR, true);
+        context.drawText(textRenderer, message, x + (WIDTH - textWidth) / 2, y + TEXT_Y_OFFSET, WHITE_COLOR, true);
     }
 
     @Override
